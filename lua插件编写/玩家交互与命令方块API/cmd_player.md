@@ -206,6 +206,45 @@ description: 命令示例
   player:action_bar("hi")
   ```
 
+### 获得玩家背包信息
+
+- get_inventory()
+  - 范围：任意
+  - 说明：获得玩家背包信息 (table)
+  - 返回值：背包信息 (table)
+  ```lua
+  --- 显示玩家背包信息，以 json 格式
+  print(json.encode(player:get_inventory()))
+
+  --- 显示2401PT背包信息，以 json 格式
+  print(json.encode(coromega:get_player_by_name("2401PT"):get_inventory()))
+
+  --- 格式化输出函数:
+  --- @param inventory_item table 包内一格物品信息
+  function formate_inventory_item(inventory_item)
+      local output=(("%-2d个 %s[特殊值=%d]"):format(inventory_item.stackSize,coromega:translate(inventory_item.id),inventory_item.aux))
+      if #inventory_item.enchantments>0 then
+          for key,value in ipairs(inventory_item.enchantments) do   
+              output=output..("\n  附魔: %d级 %s"):format(value.level,value.name)
+          end 
+      end
+      return output
+  end
+
+  --- @param inventory table 战利品（背包）信息
+  function formate_inventory(inventory)
+      local output=(("背包物品: 共计%d个"):format(#inventory.slots))
+      for key, value in ipairs(inventory.slots) do      
+          output=output.."\n"..formate_inventory_item(value)
+      end 
+      return output
+  end
+
+  print(formate_inventory(coromega:get_player_by_name("2401PT"):get_inventory()))
+
+
+  ```
+
 ### 获得玩家坐标和维度
 
 - get_pos()
